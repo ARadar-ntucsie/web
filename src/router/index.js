@@ -29,7 +29,7 @@ let router = new Router({
                 requiresAuth: true
             }
         }, {
-            path: '/event/:id',
+            path: '/event/:event_id',
             name: 'event',
             component: event_edit,
             props: true,

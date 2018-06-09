@@ -7,6 +7,8 @@ import firebase from 'firebase/app';
 import fireauth from 'firebase/auth';
 import firestore from 'firebase/firestore';
 
+import './normalize.css';
+
 Vue.config.productionTip = false;
 
 let app;

@@ -101,6 +101,7 @@ input, textarea, .datetime {
 
     border: solid 1px $aradar;
     border-bottom: none;
+    border-radius: 0; 
 
     transition: all 0.3s ease-in-out;
 }

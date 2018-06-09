@@ -106,6 +106,12 @@ export default {
             
         });
 
+        if ( this.markers.length > 0 ) {
+            this.markers.forEach( (marker, index) => {
+                console.log(marker);
+            });
+        }
+
         this.map.addListener('click', (e) => {
             if( !this.cur_marker ) {
                 this.add_marker( { lat: e.latLng.lat(), lng: e.latLng.lng() } );

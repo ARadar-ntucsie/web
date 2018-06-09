@@ -32,7 +32,7 @@ export default {
         EventForm,
         SpotForm
     },
-    props: ['id'],
+    props: ['event_id'],
     data () {
         return {
             step: 0,
@@ -51,11 +51,29 @@ export default {
             }
         };
     },
-    mounted () {
+    async mounted () {
         let currentUser = firebase.auth().currentUser;
         this.user.email = currentUser.email;
         this.user.name  = currentUser.displayName;
         this.db = firebase.firestore();
+
+        if ( this.event_id !== '0000' ) {
+            let docRef_event = this.db.collection("Event").doc(this.event_id);
+            await docRef_event.get().then( doc => {
+                if (doc.exists) {
+                    let data = doc.data();
+                    this.info.title       = data.Title;
+                    this.info.category    = data.Category;
+                    this.info.start_time  = data.StartTime.toDate().toISOString();
+                    this.info.end_time    = data.EndTime.toDate().toISOString();
+                    this.info.description = data.Description;
+                } else { 
+                    alert("No such document!");
+                    this.$router.push('/event/0000');
+                }
+            });
+        }
+
     }, 
     methods: {
         go_step(tostep) {
