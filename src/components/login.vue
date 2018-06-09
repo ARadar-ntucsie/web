@@ -25,7 +25,7 @@ export default {
     },
     mounted () {
         if ( firebase.auth().currentUser ) {
-            this.$router.replace('dashboard');
+            this.$router.replace('/dashboard');
         }
     }, 
     methods: {
@@ -38,7 +38,7 @@ export default {
         login: function( provider ) {
             // firebase.auth().signInWithRedirect(provider).then( (result) => {
             firebase.auth().signInWithPopup(provider).then( (result) => {
-                this.$router.replace('dashboard');
+                this.$router.replace('/dashboard');
             }).catch( (error) => {
                 console.log(error);
             });

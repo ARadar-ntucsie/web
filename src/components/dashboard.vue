@@ -64,11 +64,11 @@ export default {
     methods: {
         logout: function() {
             firebase.auth().signOut().then( () => {
-                this.$router.replace('login');
+                this.$router.replace('/login');
             });
         },
         add_event: function( id ) {
-            this.$router.push('event/'+id);
+            this.$router.push('/event/'+id);
         }
     }
 };

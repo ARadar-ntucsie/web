@@ -61,10 +61,10 @@ export default {
         go_step(tostep) {
             this.step = tostep;
         },
-        async back() {
-            const result = await confirm("Sure to back?")
+        back() {
+            const result = confirm("Sure to back?")
             if ( result ) {
-                this.$router.replace('profile');
+                this.$router.replace('/dashboard');
             }
         },
         check_event_data() {
@@ -117,7 +117,6 @@ export default {
                 let colRef_spot  = this.db.collection("Spot");
                 await this.spots.forEach( async (spot) => {
                     let lat = spot.position.lat(), lng = spot.position.lng();
-                    console.log({ Latitude: lat, Longitude: lng });
                     await colRef_spot.add({
                         Title: spot.title,
                         Position: new firebase.firestore.GeoPoint( lat, lng ),
@@ -127,7 +126,7 @@ export default {
                         Graph: spot.graphurl,
                     });
                 });
-                this.$router.replace('profile');
+                this.$router.replace('/dashboard');
             }
         },
         random_docid() {
