@@ -14,8 +14,10 @@
             <button @click="submit">submit</button>
         </li>
     </ul>
-    <event-form v-show="step==0" :info="info"/>
-    <spot-form  v-show="step==1" :markers="spots" />
+    <div class="form-box">
+        <event-form class="eform" :class="{displayform : step!=0}" :info="info"/>
+        <spot-form  class="sform" :class="{displayform : step!=1}" :markers="spots" />
+    </div>
 </div>
 </template>
 
@@ -51,6 +53,20 @@ export default {
             }
         };
     },
+    computed: {
+        docid() {
+            if ( this.event_id !== '0000' ) { return this.event_id; }
+
+            let text = "", possible = 
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789";
+
+            for (var i = 0; i < 4; i++) {
+                text += possible.charAt(Math.floor(Math.random()*possible.length));
+            }
+
+            return text;
+        }
+    },
     async mounted () {
         let currentUser = firebase.auth().currentUser;
         this.user.email = currentUser.email;
@@ -76,9 +92,7 @@ export default {
 
     }, 
     methods: {
-        go_step(tostep) {
-            this.step = tostep;
-        },
+        go_step(tostep) { this.step = tostep; },
         back() {
             const result = confirm("Sure to back?")
             if ( result ) {
@@ -86,35 +100,35 @@ export default {
             }
         },
         check_event_data() {
-            if (!this.info.title      ) {
-                alert("title not fill."); return false;       }
-            if (!this.info.category   ) {
-                alert("category not fill."); return false;    }
-            if (!this.info.description) {
-                alert("description not fill."); return false; }
-            if ( !this.info.start_time || !this.info.end_time ) {
-                alert("start or end time not fill."); return false;;
-            } else if ( this.info.start_time >= this.info.end_time ) {
-                alert("start time can't after end time."); return false;;
-            } return true;
+            let name = "[Event] ", msg = "";
+                 if (!this.info.title      ) { msg = "title not fill.";       }
+            else if (!this.info.category   ) { msg = "category not fill.";    }
+            else if (!this.info.description) { msg = "description not fill."; }
+            else if (!this.info.start_time ) { msg = "start time not fill.";  }
+            else if (!this.info.end_time   ) { msg = "end time not fill.";    }
+            else if ( this.info.start_time >= this.info.end_time ) {
+                msg = "start time can't after end time.";
+            }
+
+            if ( msg !== "" ) { alert(name + msg); return false; }
+            return true;
         },
         check_spot_data(spot) {
-            let label_name = "[" + spot.label.text + "]";
-            if (!spot.title   ) {
-                alert(label_name+" title not fill."); return false;       }
-            if (!spot.sub     ) {
-                alert(label_name+" category not fill."); return false;    }
-            if (!spot.desc    ) {
-                alert(label_name+" description not fill."); return false; }
-            if (!spot.graphurl) {
-                alert(label_name+" graphurl not fill."); return false;    }
+            let label_name = "[" + spot.label.text + "] ", msg = "";
+                 if (!spot.title   ) { msg = "title not fill.";       }
+            else if (!spot.sub     ) { msg = "category not fill.";    }
+            else if (!spot.desc    ) { msg = "description not fill."; }
+            else if (!spot.graphurl) { msg = "graphurl not fill.";    }
 
+            if ( msg !== "" ) { alert(label_name + msg); return false; }
             return true;
         },
         check_spots_data() {
             this.spots = this.spots.filter( spot => spot.getMap() );
-            if ( this.spots.length == 0 ) { alert("Please add spot."); return false; }
-            return this.spots.every( spot => this.check_spot_data(spot));
+            if ( this.spots.length == 0 ) {
+                alert("Please add spot."); return false; }
+
+            return this.spots.every( spot => this.check_spot_data(spot) );
         },
         async submit () {
             const result = await confirm("Sure to submit?")
@@ -123,7 +137,7 @@ export default {
                 if ( !this.check_spots_data() ) { return; }
 
                 let colRef_event = this.db.collection("Event");
-                await colRef_event.doc( this.random_docid() ).set({
+                await colRef_event.doc( this.docid ).set({
                     Title: this.info.title,
                     Category: this.info.category,
                     Description: this.info.description,
@@ -146,15 +160,6 @@ export default {
                 });
                 this.$router.replace('/dashboard');
             }
-        },
-        random_docid() {
-            let text = "", possible = 
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789";
-
-            for (var i = 0; i < 4; i++)
-                text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-            return text;
         }
     }
 };
@@ -172,6 +177,10 @@ $lightaradar: #6dc28b;
 #event_info {
     width: 90vw;
     text-align: center;
+}
+
+.displayform {
+    display: none;
 }
 
 #stepview {
@@ -210,4 +219,77 @@ $lightaradar: #6dc28b;
         }
     }
 }
+
+// /* Smartphones (portrait and landscape) ----------- */
+// @media only screen 
+// and (min-device-width : 320px) and (max-device-width : 480px) {
+// /* Styles */
+// }
+
+// /* Smartphones (landscape) ----------- */
+// @media only screen and (min-width : 321px) {
+// /* Styles */
+// }
+
+// /* Smartphones (portrait) ----------- */
+// @media only screen and (max-width : 320px) {
+// /* Styles */
+// }
+
+// /* iPads (portrait and landscape) ----------- */
+// @media only screen 
+// and (min-device-width : 768px) and (max-device-width : 1024px) {
+// /* Styles */
+// }
+
+// /* iPads (landscape) ----------- */
+// @media only screen 
+// and (min-device-width : 768px) and (max-device-width : 1024px) 
+// and (orientation : landscape) {
+// /* Styles */
+// }
+
+// /* iPads (portrait) ----------- */
+// @media only screen 
+// and (min-device-width : 768px) and (max-device-width : 1024px) 
+// and (orientation : portrait) {
+// /* Styles */
+// }
+
+// /* Desktops and laptops ----------- */
+// @media only screen and (min-width : 1224px) {
+// /* Styles */
+// }
+
+/* Large screens ----------- */
+@media only screen and (min-width : 1824px) {
+    .form-box {
+        position: relative;
+        .eform, .sform {
+                position: absolute;
+                display: block;
+                
+        }
+        .eform { left: 0;  width: 30.5% !important; }
+        .sform { right: 0; width: 68.5% !important; }
+    }
+
+    #stepview {
+        li {
+            display: none;
+
+            &:last-child, &:first-child {
+                display: inline-block;
+                width: 50%;
+            }
+        }
+    }
+}
+
+// /* iPhone 4 ----------- */
+// @media
+// only screen and (-webkit-min-device-pixel-ratio : 1.5),
+// only screen and (min-device-pixel-ratio : 1.5) {
+// /* Styles */
+// }
 </style>

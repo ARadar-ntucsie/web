@@ -1,4 +1,3 @@
-
 <template>
 <div id="dashboard">
     <img id="brand" src="../assets/logo.png">
