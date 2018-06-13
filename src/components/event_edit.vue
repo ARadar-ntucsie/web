@@ -54,7 +54,7 @@ export default {
         };
     },
     computed: {
-        docid() {
+        docid () {
             if ( this.event_id !== '0000' ) { return this.event_id; }
 
             let text = "", possible = 
@@ -92,15 +92,15 @@ export default {
 
     }, 
     methods: {
-        go_step(tostep) { this.step = tostep; },
-        back() {
+        go_step (tostep) { this.step = tostep; },
+        back () {
             const result = confirm("Sure to back?")
             if ( result ) {
                 this.$router.replace('/dashboard');
             }
         },
-        check_event_data() {
-            let name = "[Event] ", msg = "";
+        check_event_data () {
+            let msg = "";
                  if (!this.info.title      ) { msg = "title not fill.";       }
             else if (!this.info.category   ) { msg = "category not fill.";    }
             else if (!this.info.description) { msg = "description not fill."; }
@@ -110,20 +110,20 @@ export default {
                 msg = "start time can't after end time.";
             }
 
-            if ( msg !== "" ) { alert(name + msg); return false; }
+            if ( msg !== "" ) { alert(`[Event]: ${msg}`); return false; }
             return true;
         },
-        check_spot_data(spot) {
-            let label_name = "[" + spot.label.text + "] ", msg = "";
+        check_spot_data (spot) {
+            let msg = "";
                  if (!spot.title   ) { msg = "title not fill.";       }
             else if (!spot.sub     ) { msg = "category not fill.";    }
             else if (!spot.desc    ) { msg = "description not fill."; }
             else if (!spot.graphurl) { msg = "graphurl not fill.";    }
 
-            if ( msg !== "" ) { alert(label_name + msg); return false; }
+            if ( msg !== "" ) { alert(`[${spot.label.text}]: ${msg}`); return false; }
             return true;
         },
-        check_spots_data() {
+        check_spots_data () {
             this.spots = this.spots.filter( spot => spot.getMap() );
             if ( this.spots.length == 0 ) {
                 alert("Please add spot."); return false; }
@@ -131,7 +131,7 @@ export default {
             return this.spots.every( spot => this.check_spot_data(spot) );
         },
         async submit () {
-            const result = await confirm("Sure to submit?")
+            const result = await confirm("Are sure to submit?")
             if ( result ) {
                 if ( !this.check_event_data() ) { return; }
                 if ( !this.check_spots_data() ) { return; }
@@ -268,7 +268,6 @@ $lightaradar: #6dc28b;
         .eform, .sform {
                 position: absolute;
                 display: block;
-                
         }
         .eform { left: 0;  width: 30.5% !important; }
         .sform { right: 0; width: 68.5% !important; }
